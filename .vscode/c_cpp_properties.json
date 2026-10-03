@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "MinGW-w64 x86",
+            "compilerPath": "C:/msys64/mingw32/bin/g++.exe",
+            "intelliSenseMode": "windows-gcc-x86",
+            "cppStandard": "c++11",
+            "cStandard": "c17",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "compileCommands": "${workspaceFolder}/build/mingw-x86-debug/compile_commands.json",
+            "includePath": [
+                "${workspaceFolder}/neo",
+                "${workspaceFolder}/neo/renderer/jpeg-6",
+                "${workspaceFolder}/neo/framework/zlib",
+                "${workspaceFolder}/**"
+            ],
+            "defines": [
+                "WIN32",
+                "_WIN32"
+            ]
+        }
+    ],
+    "version": 4
+}

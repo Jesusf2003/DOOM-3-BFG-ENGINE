@@ -1,0 +1,66 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Configure Doom 3 BFG x86 Debug",
+            "type": "process",
+            "command": "cmake",
+            "args": [
+                "--preset", "mingw-x86-debug"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Build Doom 3 BFG x86 Debug",
+            "type": "process",
+            "command": "cmake",
+            "args": [
+                "--build", "--preset", "doom3-x86-debug"
+            ],
+            "dependsOn": "Configure Doom 3 BFG x86 Debug",
+            "dependsOrder": "sequence",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Build Doom 3 BFG x86 Release",
+            "type": "process",
+            "command": "cmake",
+            "args": [
+                "--build", "--preset", "doom3-x86-release"
+            ],
+            "dependsOn": "Configure Doom 3 BFG x86 Release",
+            "dependsOrder": "sequence",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Configure Doom 3 BFG x86 Release",
+            "type": "process",
+            "command": "cmake",
+            "args": [
+                "--preset", "mingw-x86-release"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Test Doom 3 BFG x86 Debug",
+            "type": "process",
+            "command": "ctest",
+            "args": [
+                "--preset", "test-x86-debug"
+            ],
+            "dependsOn": "Configure Doom 3 BFG x86 Debug",
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        },
+        {
+            "label": "Clean bin (preserve assets)",
+            "type": "process",
+            "command": "cmake",
+            "args": [
+                "-DENGINE_BIN=${workspaceFolder}/bin",
+                "-P", "${workspaceFolder}/cmake/CleanBin.cmake"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}

@@ -1,0 +1,90 @@
+{
+    "version": 2,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "mingw-x86-debug",
+            "displayName": "MinGW x86 Debug",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/build/mingw-x86-debug",
+            "environment": {
+                "PATH": "C:/msys64/mingw32/bin;$penv{PATH}"
+            },
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x86-mingw-dynamic",
+                "CMAKE_C_COMPILER": "C:/msys64/mingw32/bin/gcc.exe",
+                "CMAKE_CXX_COMPILER": "C:/msys64/mingw32/bin/g++.exe",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        },
+        {
+            "name": "mingw-x86-release",
+            "displayName": "MinGW x86 Release",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/build/mingw-x86-release",
+            "environment": {
+                "PATH": "C:/msys64/mingw32/bin;$penv{PATH}"
+            },
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x86-mingw-dynamic",
+                "CMAKE_C_COMPILER": "C:/msys64/mingw32/bin/gcc.exe",
+                "CMAKE_CXX_COMPILER": "C:/msys64/mingw32/bin/g++.exe",
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "doom3-x86-debug",
+            "displayName": "Build Doom 3 BFG x86 Debug",
+            "configurePreset": "mingw-x86-debug",
+            "environment": {
+                "PATH": "C:/msys64/mingw32/bin;$penv{PATH}"
+            },
+            "targets": ["doom3"],
+            "jobs": 8
+        },
+        {
+            "name": "doom3-x86-release",
+            "displayName": "Build Doom 3 BFG x86 Release",
+            "configurePreset": "mingw-x86-release",
+            "environment": {
+                "PATH": "C:/msys64/mingw32/bin;$penv{PATH}"
+            },
+            "targets": ["doom3"],
+            "jobs": 8
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "test-x86-debug",
+            "displayName": "Test Doom 3 BFG x86 Debug",
+            "configurePreset": "mingw-x86-debug",
+            "environment": {
+                "PATH": "C:/msys64/mingw32/bin;$penv{PATH}"
+            },
+            "output": {
+                "outputOnFailure": true
+            }
+        },
+        {
+            "name": "test-x86-release",
+            "displayName": "Test Doom 3 BFG x86 Release",
+            "configurePreset": "mingw-x86-release",
+            "environment": {
+                "PATH": "C:/msys64/mingw32/bin;$penv{PATH}"
+            },
+            "output": {
+                "outputOnFailure": true
+            }
+        }
+    ]
+}
