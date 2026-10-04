@@ -40,13 +40,10 @@ If you have questions concerning this license or the applicable additional terms
 LPCTSTR KEY_DisableTaskMgr = "Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System";
 LPCTSTR VAL_DisableTaskMgr = "DisableTaskMgr";
 
-// The section is SHARED among all instances of this DLL.
-// A low-level keyboard hook is always a system-wide hook.
-#pragma data_seg (".mydata")
+// A low-level keyboard hook is called in the context of the thread that installed it,
+// so these don't need a shared data section (that only mattered for a hook DLL).
 HHOOK g_hHookKbdLL = NULL;	// hook handle
 BOOL  g_bBeep = FALSE;		// beep on illegal key
-#pragma data_seg ()
-#pragma comment(linker, "/SECTION:.mydata,RWS") // tell linker: make it shared
 
 /*
 ================

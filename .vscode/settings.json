@@ -1,18 +1,18 @@
 {
-    "cmake.configureOnOpen": false,
-    "cmake.useCMakePresets": "always",
-    "cmake.defaultConfigurePreset": "mingw-x86-debug",
-    "cmake.defaultBuildPreset": "doom3-x86-debug",
-    "cmake.defaultTestPreset": "test-x86-debug",
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "C_Cpp.default.compilerPath": "C:/msys64/mingw32/bin/g++.exe",
-    "files.associations": {
-        "*.h": "cpp"
-    },
-    "makefile.configurations": [
-      {
-        "makePath": "C://mingw64/bin/mingw64-make.exe",
-        "name": "Unnamed configuration 1"
-      }
-    ]
+  "cmake.configureOnOpen": false,
+  "cmake.useCMakePresets": "always",
+  "cmake.defaultConfigurePreset": "x64-debug",
+  "cmake.defaultBuildPreset": "x64-debug",
+  "cmake.defaultTestPreset": "test-x64-debug",
+  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+  "C_Cpp.default.compilerPath": "C:/msys64/mingw64/bin/g++.exe",
+  "files.associations": {
+    "*.h": "cpp"
+  },
+  "makefile.configurations": [
+    {
+      "makePath": "C://mingw64/bin/mingw64-make.exe",
+      "name": "Unnamed configuration 1"
+    }
+  ]
 }

@@ -1,28 +1,51 @@
 {
-    "version": "0.2.0",
-    "configurations": [
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Doom 3 BFG x64 Debug (MinGW gdb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/Doom3BFG.exe",
+      "args": [
+        "+set",
+        "fs_basepath",
+        "${workspaceFolder}/bin"
+      ],
+      "cwd": "${workspaceFolder}/bin",
+      "environment": [
         {
-            "name": "Doom 3 BFG (MinGW gdb)",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/bin/doom3.exe",
-            "args": [
-                "+set",
-                "fs_basepath",
-                "${workspaceFolder}/bin"
-            ],
-            "cwd": "${workspaceFolder}/bin",
-            "environment": [
-                {
-                    "name": "PATH",
-                    "value": "${workspaceFolder}/bin;C:/msys64/mingw32/bin;${env:PATH}"
-                }
-            ],
-            "MIMode": "gdb",
-            "miDebuggerPath": "C:/msys64/mingw32/bin/gdb.exe",
-            "preLaunchTask": "Build Doom 3 BFG x86 Debug",
-            "externalConsole": false,
-            "stopAtEntry": false
+          "name": "PATH",
+          "value": "${workspaceFolder}/bin;C:/msys64/mingw64/bin;${env:PATH}"
         }
-    ]
+      ],
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+      "preLaunchTask": "Build Doom 3 BFG x64 Debug",
+      "externalConsole": false,
+      "stopAtEntry": false
+    },
+    {
+      "name": "Doom 3 BFG x64 Release (MinGW gdb)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/bin/Doom3BFG.exe",
+      "args": [
+        "+set",
+        "fs_basepath",
+        "${workspaceFolder}/bin"
+      ],
+      "cwd": "${workspaceFolder}/bin",
+      "environment": [
+        {
+          "name": "PATH",
+          "value": "${workspaceFolder}/bin;C:/msys64/mingw64/bin;${env:PATH}"
+        }
+      ],
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
+      "preLaunchTask": "Build Doom 3 BFG x64 Release",
+      "externalConsole": false,
+      "stopAtEntry": false
+    }
+  ]
 }

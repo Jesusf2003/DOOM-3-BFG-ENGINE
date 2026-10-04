@@ -263,7 +263,7 @@ private:
 	idStrList					warningList;
 	idStrList					errorList;
 
-	int							gameDLL;
+	uintptr_t					gameDLL;
 
 	idCommonDialog				commonDialog;
 

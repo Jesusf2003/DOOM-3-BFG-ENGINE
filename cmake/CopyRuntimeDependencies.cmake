@@ -20,6 +20,10 @@ endif()
 file(GET_RUNTIME_DEPENDENCIES
     EXECUTABLES "${ENGINE_EXE}"
     DIRECTORIES ${runtime_search_directories}
+    # Windows API-set forwarders are resolved by the loader, never shipped
+    PRE_EXCLUDE_REGEXES "^api-ms-" "^ext-ms-"
+    # don't walk into the OS's own DLLs; only MinGW/vcpkg ones get copied
+    POST_EXCLUDE_REGEXES "^[A-Za-z]:[/\\\\][Ww][Ii][Nn][Dd][Oo][Ww][Ss][/\\\\]"
     RESOLVED_DEPENDENCIES_VAR resolved_dependencies
     UNRESOLVED_DEPENDENCIES_VAR unresolved_dependencies
 )
@@ -36,7 +40,7 @@ foreach(dependency IN LISTS resolved_dependencies)
         file(REAL_PATH "${dependency}" resolved_path)
         file(REAL_PATH "${destination}" destination_path BASE_DIRECTORY "${ENGINE_BIN}")
         if(NOT resolved_path STREQUAL destination_path)
-            file(COPY_FILE "${dependency}" "${destination}" ONLY_IF_DIFFERENT)
+            configure_file("${dependency}" "${destination}" COPYONLY)
         endif()
     endif()
 endforeach()

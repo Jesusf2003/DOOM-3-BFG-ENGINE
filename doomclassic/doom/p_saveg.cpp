@@ -68,7 +68,7 @@ void P_ArchivePlayers (void)
 	    if (dest->psprites[j].state)
 	    {
 		dest->psprites[j].state 
-			= (state_t *)(dest->psprites[j].state-::g->states);
+			= reinterpret_cast<state_t *>( static_cast<intptr_t>( dest->psprites[j].state - ::g->states ) );
 	    }
 	}
     }
@@ -104,7 +104,7 @@ void P_UnArchivePlayers (void)
 	    if (::g->players[i]. psprites[j].state)
 	    {
 		::g->players[i]. psprites[j].state 
-		    = &::g->states[ (int)::g->players[i].psprites[j].state ];
+		    = &::g->states[ static_cast<int>( reinterpret_cast<intptr_t>( ::g->players[i].psprites[j].state ) ) ];
 	    }
 	}
     }
@@ -306,10 +306,10 @@ void P_ArchiveThinkers (void)
 			mobj = (mobj_t *)::g->save_p;
 			memcpy (mobj, th, sizeof(*mobj));
 			::g->save_p += sizeof(*mobj);
-			mobj->state = (state_t *)(mobj->state - ::g->states);
+			mobj->state = reinterpret_cast<state_t *>( static_cast<intptr_t>( mobj->state - ::g->states ) );
 
 			if (mobj->player)
-				mobj->player = (player_t *)((mobj->player-::g->players) + 1);
+				mobj->player = reinterpret_cast<player_t *>( static_cast<intptr_t>( (mobj->player - ::g->players) + 1 ) );
 
 			// Save out 'target'
 			int moIndex = GetMOIndex( mobj->target );
@@ -372,7 +372,7 @@ void P_ArchiveThinkers (void)
 				ceiling = (ceiling_t *)::g->save_p;
 				memcpy (ceiling, th, sizeof(*ceiling));
 				::g->save_p += sizeof(*ceiling);
-				ceiling->sector = (sector_t *)(ceiling->sector - ::g->sectors);
+				ceiling->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( ceiling->sector - ::g->sectors ) );
 			}
 			continue;
 		}
@@ -384,7 +384,7 @@ void P_ArchiveThinkers (void)
 			ceiling = (ceiling_t *)::g->save_p;
 			memcpy (ceiling, th, sizeof(*ceiling));
 			::g->save_p += sizeof(*ceiling);
-			ceiling->sector = (sector_t *)(ceiling->sector - ::g->sectors);
+			ceiling->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( ceiling->sector - ::g->sectors ) );
 			continue;
 		}
 
@@ -395,7 +395,7 @@ void P_ArchiveThinkers (void)
 			door = (vldoor_t *)::g->save_p;
 			memcpy (door, th, sizeof(*door));
 			::g->save_p += sizeof(*door);
-			door->sector = (sector_t *)(door->sector - ::g->sectors);
+			door->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( door->sector - ::g->sectors ) );
 			continue;
 		}
 
@@ -406,7 +406,7 @@ void P_ArchiveThinkers (void)
 			floor = (floormove_t *)::g->save_p;
 			memcpy (floor, th, sizeof(*floor));
 			::g->save_p += sizeof(*floor);
-			floor->sector = (sector_t *)(floor->sector - ::g->sectors);
+			floor->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( floor->sector - ::g->sectors ) );
 			continue;
 		}
 
@@ -417,7 +417,7 @@ void P_ArchiveThinkers (void)
 			plat = (plat_t *)::g->save_p;
 			memcpy (plat, th, sizeof(*plat));
 			::g->save_p += sizeof(*plat);
-			plat->sector = (sector_t *)(plat->sector - ::g->sectors);
+			plat->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( plat->sector - ::g->sectors ) );
 			continue;
 		}
 
@@ -428,7 +428,7 @@ void P_ArchiveThinkers (void)
 			fire = (fireflicker_t *)::g->save_p;
 			memcpy (fire, th, sizeof(*fire));
 			::g->save_p += sizeof(*fire);
-			fire->sector = (sector_t *)(fire->sector - ::g->sectors);
+			fire->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( fire->sector - ::g->sectors ) );
 			continue;
 		}
 
@@ -439,7 +439,7 @@ void P_ArchiveThinkers (void)
 			flash = (lightflash_t *)::g->save_p;
 			memcpy (flash, th, sizeof(*flash));
 			::g->save_p += sizeof(*flash);
-			flash->sector = (sector_t *)(flash->sector - ::g->sectors);
+			flash->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( flash->sector - ::g->sectors ) );
 			continue;
 		}
 
@@ -450,7 +450,7 @@ void P_ArchiveThinkers (void)
 			strobe = (strobe_t *)::g->save_p;
 			memcpy (strobe, th, sizeof(*strobe));
 			::g->save_p += sizeof(*strobe);
-			strobe->sector = (sector_t *)(strobe->sector - ::g->sectors);
+			strobe->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( strobe->sector - ::g->sectors ) );
 			continue;
 		}
 
@@ -461,7 +461,7 @@ void P_ArchiveThinkers (void)
 			glow = (glow_t *)::g->save_p;
 			memcpy (glow, th, sizeof(*glow));
 			::g->save_p += sizeof(*glow);
-			glow->sector = (sector_t *)(glow->sector - ::g->sectors);
+			glow->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( glow->sector - ::g->sectors ) );
 			continue;
 		}
 	}
@@ -622,14 +622,14 @@ void P_UnArchiveThinkers (void)
 			mobj = (mobj_t*)DoomLib::Z_Malloc(sizeof(*mobj), PU_LEVEL, NULL);
 			memcpy (mobj, ::g->save_p, sizeof(*mobj));
 			::g->save_p += sizeof(*mobj);
-			mobj->state = &::g->states[(int)mobj->state];
+			mobj->state = &::g->states[static_cast<int>( reinterpret_cast<intptr_t>( mobj->state ) )];
 
 			mobj->target = NULL;
 			mobj->tracer = NULL;
 
 			if (mobj->player)
 			{
-				mobj->player = &::g->players[(int)mobj->player-1];
+				mobj->player = &::g->players[static_cast<int>( reinterpret_cast<intptr_t>( mobj->player ) )-1];
 				mobj->player->mo = mobj;
 			}
 
@@ -693,7 +693,7 @@ void P_UnArchiveThinkers (void)
 			ceiling = (ceiling_t*)DoomLib::Z_Malloc(sizeof(*ceiling), PU_LEVEL, NULL);
 			memcpy (ceiling, ::g->save_p, sizeof(*ceiling));
 			::g->save_p += sizeof(*ceiling);
-			ceiling->sector = &::g->sectors[(int)ceiling->sector];
+			ceiling->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( ceiling->sector ) )];
 			ceiling->sector->specialdata = ceiling;
 
 			if (ceiling->thinker.function.acp1)
@@ -708,7 +708,7 @@ void P_UnArchiveThinkers (void)
 			door = (vldoor_t*)DoomLib::Z_Malloc(sizeof(*door), PU_LEVEL, NULL);
 			memcpy (door, ::g->save_p, sizeof(*door));
 			::g->save_p += sizeof(*door);
-			door->sector = &::g->sectors[(int)door->sector];
+			door->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( door->sector ) )];
 			door->sector->specialdata = door;
 			door->thinker.function.acp1 = (actionf_p1)T_VerticalDoor;
 			P_AddThinker (&door->thinker);
@@ -719,7 +719,7 @@ void P_UnArchiveThinkers (void)
 			floor = (floormove_t*)DoomLib::Z_Malloc (sizeof(*floor), PU_LEVEL, NULL);
 			memcpy (floor, ::g->save_p, sizeof(*floor));
 			::g->save_p += sizeof(*floor);
-			floor->sector = &::g->sectors[(int)floor->sector];
+			floor->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( floor->sector ) )];
 			floor->sector->specialdata = floor;
 			floor->thinker.function.acp1 = (actionf_p1)T_MoveFloor;
 			P_AddThinker (&floor->thinker);
@@ -730,7 +730,7 @@ void P_UnArchiveThinkers (void)
 			plat = (plat_t*)DoomLib::Z_Malloc (sizeof(*plat), PU_LEVEL, NULL);
 			memcpy (plat, ::g->save_p, sizeof(*plat));
 			::g->save_p += sizeof(*plat);
-			plat->sector = &::g->sectors[(int)plat->sector];
+			plat->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( plat->sector ) )];
 			plat->sector->specialdata = plat;
 
 			if (plat->thinker.function.acp1)
@@ -745,7 +745,7 @@ void P_UnArchiveThinkers (void)
 			fire = (fireflicker_t*)DoomLib::Z_Malloc (sizeof(*fire), PU_LEVEL, NULL);
 			memcpy (fire, ::g->save_p, sizeof(*fire));
 			::g->save_p += sizeof(*fire);
-			fire->sector = &::g->sectors[(int)fire->sector];
+			fire->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( fire->sector ) )];
 			fire->thinker.function.acp1 = (actionf_p1)T_FireFlicker;
 			P_AddThinker (&fire->thinker);
 			break;
@@ -755,7 +755,7 @@ void P_UnArchiveThinkers (void)
 			flash = (lightflash_t*)DoomLib::Z_Malloc (sizeof(*flash), PU_LEVEL, NULL);
 			memcpy (flash, ::g->save_p, sizeof(*flash));
 			::g->save_p += sizeof(*flash);
-			flash->sector = &::g->sectors[(int)flash->sector];
+			flash->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( flash->sector ) )];
 			flash->thinker.function.acp1 = (actionf_p1)T_LightFlash;
 			P_AddThinker (&flash->thinker);
 			break;
@@ -765,7 +765,7 @@ void P_UnArchiveThinkers (void)
 			strobe = (strobe_t*)DoomLib::Z_Malloc (sizeof(*strobe), PU_LEVEL, NULL);
 			memcpy (strobe, ::g->save_p, sizeof(*strobe));
 			::g->save_p += sizeof(*strobe);
-			strobe->sector = &::g->sectors[(int)strobe->sector];
+			strobe->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( strobe->sector ) )];
 			strobe->thinker.function.acp1 = (actionf_p1)T_StrobeFlash;
 			P_AddThinker (&strobe->thinker);
 			break;
@@ -775,7 +775,7 @@ void P_UnArchiveThinkers (void)
 			glow = (glow_t*)DoomLib::Z_Malloc (sizeof(*glow), PU_LEVEL, NULL);
 			memcpy (glow, ::g->save_p, sizeof(*glow));
 			::g->save_p += sizeof(*glow);
-			glow->sector = &::g->sectors[(int)glow->sector];
+			glow->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( glow->sector ) )];
 			glow->thinker.function.acp1 = (actionf_p1)T_Glow;
 			P_AddThinker (&glow->thinker);
 			break;
@@ -832,7 +832,7 @@ void P_ArchiveSpecials (void)
 		ceiling = (ceiling_t *)::g->save_p;
 		memcpy (ceiling, th, sizeof(*ceiling));
 		::g->save_p += sizeof(*ceiling);
-		ceiling->sector = (sector_t *)(ceiling->sector - ::g->sectors);
+		ceiling->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( ceiling->sector - ::g->sectors ) );
 	    }
 	    continue;
 	}
@@ -844,7 +844,7 @@ void P_ArchiveSpecials (void)
 	    ceiling = (ceiling_t *)::g->save_p;
 	    memcpy (ceiling, th, sizeof(*ceiling));
 	    ::g->save_p += sizeof(*ceiling);
-	    ceiling->sector = (sector_t *)(ceiling->sector - ::g->sectors);
+	    ceiling->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( ceiling->sector - ::g->sectors ) );
 	    continue;
 	}
 			
@@ -855,7 +855,7 @@ void P_ArchiveSpecials (void)
 	    door = (vldoor_t *)::g->save_p;
 	    memcpy (door, th, sizeof(*door));
 	    ::g->save_p += sizeof(*door);
-	    door->sector = (sector_t *)(door->sector - ::g->sectors);
+	    door->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( door->sector - ::g->sectors ) );
 	    continue;
 	}
 			
@@ -866,7 +866,7 @@ void P_ArchiveSpecials (void)
 	    floor = (floormove_t *)::g->save_p;
 	    memcpy (floor, th, sizeof(*floor));
 	    ::g->save_p += sizeof(*floor);
-	    floor->sector = (sector_t *)(floor->sector - ::g->sectors);
+	    floor->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( floor->sector - ::g->sectors ) );
 	    continue;
 	}
 			
@@ -877,7 +877,7 @@ void P_ArchiveSpecials (void)
 	    plat = (plat_t *)::g->save_p;
 	    memcpy (plat, th, sizeof(*plat));
 	    ::g->save_p += sizeof(*plat);
-	    plat->sector = (sector_t *)(plat->sector - ::g->sectors);
+	    plat->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( plat->sector - ::g->sectors ) );
 	    continue;
 	}
 			
@@ -888,7 +888,7 @@ void P_ArchiveSpecials (void)
 	    flash = (lightflash_t *)::g->save_p;
 	    memcpy (flash, th, sizeof(*flash));
 	    ::g->save_p += sizeof(*flash);
-	    flash->sector = (sector_t *)(flash->sector - ::g->sectors);
+	    flash->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( flash->sector - ::g->sectors ) );
 	    continue;
 	}
 			
@@ -899,7 +899,7 @@ void P_ArchiveSpecials (void)
 	    strobe = (strobe_t *)::g->save_p;
 	    memcpy (strobe, th, sizeof(*strobe));
 	    ::g->save_p += sizeof(*strobe);
-	    strobe->sector = (sector_t *)(strobe->sector - ::g->sectors);
+	    strobe->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( strobe->sector - ::g->sectors ) );
 	    continue;
 	}
 			
@@ -910,7 +910,7 @@ void P_ArchiveSpecials (void)
 	    glow = (glow_t *)::g->save_p;
 	    memcpy (glow, th, sizeof(*glow));
 	    ::g->save_p += sizeof(*glow);
-	    glow->sector = (sector_t *)(glow->sector - ::g->sectors);
+	    glow->sector = reinterpret_cast<sector_t *>( static_cast<intptr_t>( glow->sector - ::g->sectors ) );
 	    continue;
 	}
     }
@@ -949,7 +949,7 @@ void P_UnArchiveSpecials (void)
 	    ceiling = (ceiling_t*)DoomLib::Z_Malloc(sizeof(*ceiling), PU_LEVEL, NULL);
 	    memcpy (ceiling, ::g->save_p, sizeof(*ceiling));
 	    ::g->save_p += sizeof(*ceiling);
-	    ceiling->sector = &::g->sectors[(int)ceiling->sector];
+	    ceiling->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( ceiling->sector ) )];
 	    ceiling->sector->specialdata = ceiling;
 
 	    if (ceiling->thinker.function.acp1)
@@ -964,7 +964,7 @@ void P_UnArchiveSpecials (void)
 	    door = (vldoor_t*)DoomLib::Z_Malloc(sizeof(*door), PU_LEVEL, NULL);
 	    memcpy (door, ::g->save_p, sizeof(*door));
 	    ::g->save_p += sizeof(*door);
-	    door->sector = &::g->sectors[(int)door->sector];
+	    door->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( door->sector ) )];
 	    door->sector->specialdata = door;
 	    door->thinker.function.acp1 = (actionf_p1)T_VerticalDoor;
 	    P_AddThinker (&door->thinker);
@@ -975,7 +975,7 @@ void P_UnArchiveSpecials (void)
 	    floor = (floormove_t*)DoomLib::Z_Malloc (sizeof(*floor), PU_LEVEL, NULL);
 	    memcpy (floor, ::g->save_p, sizeof(*floor));
 	    ::g->save_p += sizeof(*floor);
-	    floor->sector = &::g->sectors[(int)floor->sector];
+	    floor->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( floor->sector ) )];
 	    floor->sector->specialdata = floor;
 	    floor->thinker.function.acp1 = (actionf_p1)T_MoveFloor;
 	    P_AddThinker (&floor->thinker);
@@ -986,7 +986,7 @@ void P_UnArchiveSpecials (void)
 	    plat = (plat_t*)DoomLib::Z_Malloc (sizeof(*plat), PU_LEVEL, NULL);
 	    memcpy (plat, ::g->save_p, sizeof(*plat));
 	    ::g->save_p += sizeof(*plat);
-	    plat->sector = &::g->sectors[(int)plat->sector];
+	    plat->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( plat->sector ) )];
 	    plat->sector->specialdata = plat;
 
 	    if (plat->thinker.function.acp1)
@@ -1001,7 +1001,7 @@ void P_UnArchiveSpecials (void)
 	    flash = (lightflash_t*)DoomLib::Z_Malloc (sizeof(*flash), PU_LEVEL, NULL);
 	    memcpy (flash, ::g->save_p, sizeof(*flash));
 	    ::g->save_p += sizeof(*flash);
-	    flash->sector = &::g->sectors[(int)flash->sector];
+	    flash->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( flash->sector ) )];
 	    flash->thinker.function.acp1 = (actionf_p1)T_LightFlash;
 	    P_AddThinker (&flash->thinker);
 	    break;
@@ -1011,7 +1011,7 @@ void P_UnArchiveSpecials (void)
 	    strobe = (strobe_t*)DoomLib::Z_Malloc (sizeof(*strobe), PU_LEVEL, NULL);
 	    memcpy (strobe, ::g->save_p, sizeof(*strobe));
 	    ::g->save_p += sizeof(*strobe);
-	    strobe->sector = &::g->sectors[(int)strobe->sector];
+	    strobe->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( strobe->sector ) )];
 	    strobe->thinker.function.acp1 = (actionf_p1)T_StrobeFlash;
 	    P_AddThinker (&strobe->thinker);
 	    break;
@@ -1021,7 +1021,7 @@ void P_UnArchiveSpecials (void)
 	    glow = (glow_t*)DoomLib::Z_Malloc (sizeof(*glow), PU_LEVEL, NULL);
 	    memcpy (glow, ::g->save_p, sizeof(*glow));
 	    ::g->save_p += sizeof(*glow);
-	    glow->sector = &::g->sectors[(int)glow->sector];
+	    glow->sector = &::g->sectors[static_cast<int>( reinterpret_cast<intptr_t>( glow->sector ) )];
 	    glow->thinker.function.acp1 = (actionf_p1)T_Glow;
 	    P_AddThinker (&glow->thinker);
 	    break;
@@ -1034,5 +1034,3 @@ void P_UnArchiveSpecials (void)
     }
 
 }
-
-

@@ -16,3 +16,10 @@ file(GLOB generated_binaries
 if(generated_binaries)
     file(REMOVE ${generated_binaries})
 endif()
+
+# Output is flat; remove per-configuration folders left over from older layouts.
+foreach(config IN ITEMS Debug Release RelWithDebInfo MinSizeRel x64 x86)
+    if(IS_DIRECTORY "${ENGINE_BIN}/${config}")
+        file(REMOVE_RECURSE "${ENGINE_BIN}/${config}")
+    endif()
+endforeach()

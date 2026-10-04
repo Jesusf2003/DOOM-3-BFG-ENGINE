@@ -1,0 +1,14 @@
+{
+  "name": "doom-3-bfg-engine",
+  "version-string": "1.0.0",
+  "dependencies": [
+    {
+      "name": "imgui",
+      "features": [
+        "win32-binding",
+        "opengl3-binding",
+        "docking-experimental"
+      ]
+    }
+  ]
+}

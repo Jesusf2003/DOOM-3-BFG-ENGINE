@@ -53,6 +53,7 @@ Global variables
 
 extern idCVar net_port;
 
+class idLobbyToSessionCBLocal;
 
 /*
 ========================
