@@ -27,14 +27,10 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 
-#undef private
-#undef protected
-
-#include "win32/win_achievements.h"
-#include "win32/win_signin.h"
-
+#include "sys_achievements.h"
 #include "sys_lobby_backend.h"
 #include "sys_lobby.h"
+#include "sys_signin.h"
 
 class idSaveGameProcessorNextMap;
 class idSaveGameProcessorSaveGame;
@@ -49,6 +45,8 @@ idLobbyStub
 */
 class idLobbyStub : public idLobbyBase {
 public:
+	void SetMatchParms( const idMatchParameters & parms ) { fakeParms = parms; }
+
 	virtual bool						IsHost() const { return false; }
 	virtual bool						IsPeer() const { return false; }
 	virtual bool						HasActivePeers() const { return false; }
@@ -697,4 +695,3 @@ public:
 
 	idSessionLocal * sessionLocal;
 };
-

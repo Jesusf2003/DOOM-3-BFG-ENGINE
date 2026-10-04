@@ -307,7 +307,7 @@ glBindMultiTextureEXT
 As of 2011/09/16 the Intel drivers for "Sandy Bridge" and "Ivy Bridge" integrated graphics do not support this extension.
 ========================
 */
-void APIENTRY glBindMultiTextureEXT( GLenum texunit, GLenum target, GLuint texture ) {
+static void APIENTRY GL_BindMultiTextureEXT( GLenum texunit, GLenum target, GLuint texture ) {
 	qglActiveTextureARB( texunit );
 	qglBindTexture( target, texture );
 }
@@ -336,8 +336,8 @@ DebugCallback
 For ARB_debug_output
 ========================
 */
-static void CALLBACK DebugCallback(unsigned int source, unsigned int type,
-								   unsigned int id, unsigned int severity, int length, const char * message, void * userParam) {
+static void APIENTRY DebugCallback( GLenum source, GLenum type, GLuint id, GLenum severity,
+									GLsizei length, const GLchar * message, const void * userParam ) {
 	// it probably isn't safe to do an idLib::Printf at this point
 	OutputDebugString( message );
 	OutputDebugString( "\n" );
@@ -375,7 +375,7 @@ static void R_CheckPortableExtensions() {
 	if ( glConfig.directStateAccess ) {
 		qglBindMultiTextureEXT = (PFNGLBINDMULTITEXTUREEXTPROC)GLimp_ExtensionPointer( "glBindMultiTextureEXT" );
 	} else {
-		qglBindMultiTextureEXT = glBindMultiTextureEXT;
+		qglBindMultiTextureEXT = GL_BindMultiTextureEXT;
 	}
 
 	// GL_ARB_texture_compression + GL_S3_s3tc

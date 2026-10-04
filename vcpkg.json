@@ -1,0 +1,10 @@
+{
+  "name": "doom3-bfg-engine",
+  "version-string": "1.0.0",
+  "dependencies": [
+    "sdl2",
+    "glew",
+    "openal-soft",
+    "zlib"
+  ]
+}

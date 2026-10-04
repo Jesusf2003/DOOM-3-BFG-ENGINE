@@ -1,0 +1,22 @@
+
+object weapon_unarmed : weapon_base
+{
+	void		init();    
+    void        Idle();
+    void        Fire();
+};
+
+void weapon_unarmed::init()
+{
+    weaponState( "Idle", 0 );
+}
+
+void weapon_unarmed::Idle()
+{
+    weaponReady();
+}
+
+void weapon_unarmed::Fire()
+{
+    melee();
+}

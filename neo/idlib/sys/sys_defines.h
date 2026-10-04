@@ -74,6 +74,15 @@ If you have questions concerning this license or the applicable additional terms
 	#define ID_PC_WIN
 	#define ID_WIN32
 	#define ID_LITTLE_ENDIAN
+
+	#if defined(_M_X64) || defined(__x86_64__)
+		#define ID_PC_WIN64
+		#define ID_WIN_X86_MMX_INTRIN
+		#define ID_WIN_X86_SSE_INTRIN
+		#define ID_WIN_X86_SSE2_INTRIN
+		#define ID_WIN_X86_SSE3_INTRIN
+		#define ID_DISABLE_SIMD_TEST_ASM
+	#endif
 #else
 #error Unknown Platform
 #endif
@@ -115,6 +124,22 @@ If you have questions concerning this license or the applicable additional terms
 #else
 #define ID_INLINE_EXTERN				extern inline
 #define ID_FORCE_INLINE_EXTERN			extern __forceinline
+#endif
+
+#if defined(__GNUC__) && !defined(_MSC_VER)
+#undef ALIGN16
+#undef ALIGNTYPE16
+#undef ALIGNTYPE128
+#undef ID_FORCE_INLINE
+#undef ID_INLINE_EXTERN
+#undef ID_FORCE_INLINE_EXTERN
+
+#define ALIGN16( x )					x __attribute__((aligned(16)))
+#define ALIGNTYPE16						__attribute__((aligned(16)))
+#define ALIGNTYPE128					__attribute__((aligned(128)))
+#define ID_FORCE_INLINE					inline __attribute__((always_inline))
+#define ID_INLINE_EXTERN				inline
+#define ID_FORCE_INLINE_EXTERN			inline __attribute__((always_inline))
 #endif
 
 // we should never rely on this define in our code. this is here so dodgy external libraries don't get confused
@@ -183,14 +208,22 @@ bulk of the codebase, so it is the best place for analyze pragmas.
 
 
 // checking format strings catches a LOT of errors
+#if defined(_MSC_VER)
 #include <CodeAnalysis\SourceAnnotations.h>
 #define	VERIFY_FORMAT_STRING	[SA_FormatString(Style="printf")]
+#else
+#define	VERIFY_FORMAT_STRING
+#endif
 
 
 // We need to inform the compiler that Error() and FatalError() will
 // never return, so any conditions that leeds to them being called are
 // guaranteed to be false in the following code
+#if defined(_MSC_VER)
 #define NO_RETURN __declspec(noreturn)
+#else
+#define NO_RETURN __attribute__((noreturn))
+#endif
 
 #endif
 

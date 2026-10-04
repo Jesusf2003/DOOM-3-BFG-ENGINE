@@ -7,7 +7,7 @@
       "command": "cmake",
       "args": [
         "--preset",
-        "x64-debug"
+        "x64-Debug"
       ],
       "problemMatcher": []
     },
@@ -18,12 +18,13 @@
       "args": [
         "--build",
         "--preset",
-        "x64-debug"
+        "x64-Debug"
       ],
       "dependsOn": "Configure Doom 3 BFG x64 Debug",
       "dependsOrder": "sequence",
       "problemMatcher": [
-        "$gcc"
+        "$gcc",
+        "$msCompile"
       ],
       "group": {
         "kind": "build",
@@ -36,7 +37,7 @@
       "command": "cmake",
       "args": [
         "--preset",
-        "x64-release"
+        "x64-Release"
       ],
       "problemMatcher": []
     },
@@ -47,12 +48,13 @@
       "args": [
         "--build",
         "--preset",
-        "x64-release"
+        "x64-Release"
       ],
       "dependsOn": "Configure Doom 3 BFG x64 Release",
       "dependsOrder": "sequence",
       "problemMatcher": [
-        "$gcc"
+        "$gcc",
+        "$msCompile"
       ]
     },
     {
@@ -60,10 +62,11 @@
       "type": "process",
       "command": "ctest",
       "args": [
-        "--preset",
-        "test-x64-debug"
+        "--test-dir",
+        "${workspaceFolder}/out/build/x64-Debug",
+        "--output-on-failure"
       ],
-      "dependsOn": "Configure Doom 3 BFG x64 Debug",
+      "dependsOn": "Build Doom 3 BFG x64 Debug",
       "dependsOrder": "sequence",
       "problemMatcher": []
     },
@@ -72,25 +75,11 @@
       "type": "process",
       "command": "ctest",
       "args": [
-        "--preset",
-        "test-x64-release"
+        "--test-dir",
+        "${workspaceFolder}/out/build/x64-Release",
+        "--output-on-failure"
       ],
-      "dependsOn": "Configure Doom 3 BFG x64 Release",
-      "dependsOrder": "sequence",
-      "problemMatcher": []
-    },
-    {
-      "label": "Clean bin (keep assets)",
-      "type": "process",
-      "command": "cmake",
-      "args": [
-        "--build",
-        "--preset",
-        "x64-debug",
-        "--target",
-        "clean-bin"
-      ],
-      "dependsOn": "Configure Doom 3 BFG x64 Debug",
+      "dependsOn": "Build Doom 3 BFG x64 Release",
       "dependsOrder": "sequence",
       "problemMatcher": []
     }

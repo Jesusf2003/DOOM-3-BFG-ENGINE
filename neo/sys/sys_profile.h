@@ -28,6 +28,8 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_PROFILE_H__
 #define __SYS_PROFILE_H__
 
+#include <memory>
+
 #include "sys_savegame.h"
 #include "sys_session_savegames.h"
 
@@ -61,8 +63,8 @@ private:
 	void				OnSaveSettingsCompleted( idSaveLoadParms * parms );
 
 private:
-	std::auto_ptr< idSaveGameProcessorSaveProfile >	profileSaveProcessor;
-	std::auto_ptr< idSaveGameProcessorLoadProfile >	profileLoadProcessor;
+	std::unique_ptr< idSaveGameProcessorSaveProfile >	profileSaveProcessor;
+	std::unique_ptr< idSaveGameProcessorLoadProfile >	profileLoadProcessor;
 
 	idLocalUser *						user;					// reference passed in
 	idPlayerProfile *					profile;				

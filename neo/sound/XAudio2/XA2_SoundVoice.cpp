@@ -459,12 +459,14 @@ void idSoundVoice_XAudio2::SetSampleRate( uint32 newSampleRate, uint32 operation
 	assert( freqRatio >= XAUDIO2_MIN_FREQ_RATIO && freqRatio <= XAUDIO2_MAX_FREQ_RATIO );
 	freqRatio = idMath::ClampFloat( XAUDIO2_MIN_FREQ_RATIO, XAUDIO2_MAX_FREQ_RATIO, freqRatio );
 
-	// if the value specified for maxFreqRatio is too high for the specified format, the call to CreateSourceVoice will fail
+#if __has_include(<xma2defs.h>)
+	// XMA-specific limits are only available with the legacy XMA SDK definitions.
 	if ( numChannels == 1 ) {
 		assert( freqRatio * (float)SYSTEM_SAMPLE_RATE <= XAUDIO2_MAX_RATIO_TIMES_RATE_XMA_MONO );
 	} else {
 		assert( freqRatio * (float)SYSTEM_SAMPLE_RATE <= XAUDIO2_MAX_RATIO_TIMES_RATE_XMA_MULTICHANNEL );
 	}
+#endif
 	pSourceVoice->SetFrequencyRatio( freqRatio, operationSet );
 }
 

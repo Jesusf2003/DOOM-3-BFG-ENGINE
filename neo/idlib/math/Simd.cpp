@@ -128,7 +128,13 @@ long baseClocks = 0;
 
 #define TIME_TYPE int
 
+#if defined(ID_DISABLE_SIMD_TEST_ASM)
+#define StartRecordTime( start )			( (start) = (int)Sys_GetClockTicks() )
+#define StopRecordTime( end )				( (end) = (int)Sys_GetClockTicks() )
+#else
+#if defined(_MSC_VER)
 #pragma warning(disable : 4731)     // frame pointer register 'ebx' modified by inline assembly code
+#endif
 
 long saved_ebx = 0;
 
@@ -149,6 +155,7 @@ long saved_ebx = 0;
 	__asm mov ebx, saved_ebx				\
 	__asm xor eax, eax						\
 	__asm cpuid
+#endif
 
 
 #define GetBest( start, end, best )			\

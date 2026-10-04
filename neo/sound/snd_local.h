@@ -82,12 +82,16 @@ typedef enum {
 
 #define OPERATION_SET 1
 
+#if defined(_WIN32) && __has_include(<dxsdkver.h>)
 #include <dxsdkver.h>
+#endif
 
 #include <xaudio2.h>
 #include <xaudio2fx.h>
 #include <X3DAudio.h>
+#if __has_include(<xma2defs.h>)
 #include <xma2defs.h>
+#endif
 #include "XAudio2/XA2_SoundSample.h"
 #include "XAudio2/XA2_SoundVoice.h"
 #include "XAudio2/XA2_SoundHardware.h"

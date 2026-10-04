@@ -1,0 +1,17 @@
+
+float GAME_FPS = 60.0f;
+
+
+#include "script/doom_defs.script"
+#include "script/doom_events.script"
+
+#include "script/player.script"
+#include "script/weapon_base.script"
+#include "script/weapon_unarmed.script"
+
+
+void doom_main() {
+	sys.print( "Entering doom_main()\n");
+
+	sys.print( "Exiting doom_main()\n" );
+}

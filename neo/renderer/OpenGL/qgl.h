@@ -33,7 +33,11 @@ If you have questions concerning this license or the applicable additional terms
 #define __QGL_H__
 
 
+#if defined(ID_GL_HARDLINK)
+#include <GL/glew.h>
+#else
 #include <gl/gl.h>
+#endif
 
 
 #ifndef APIENTRY

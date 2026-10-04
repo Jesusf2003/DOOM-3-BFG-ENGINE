@@ -1,0 +1,160 @@
+_default
+{
+	{
+		map	_default
+	}
+}
+
+_tracemodel
+{
+	collision
+}
+
+material guiSolid
+{
+	{
+		blend blend
+		colored
+		map "_white"
+		clamp
+	}
+}
+
+material doomLeftEye
+{
+	stereoeye left
+	{
+		blend blend
+		map textures/engine/vr_eye.tga
+	}
+}
+
+material doomRightEye
+{
+	stereoeye right
+	{
+		blend blend
+		map textures/engine/vr_eye.tga
+	}
+}
+
+console
+{
+	{
+		map	textures/gui/black.tga
+		linear	
+	}
+}
+
+wipeMaterial
+{
+	{
+		blend		blend
+		alpha		parm3
+		map			_black
+		scale		1, -1
+		translate	0, -1
+	}
+}
+
+wipe2Material
+{
+	{
+		blend		blend
+		map			_black
+		scale		1, -1
+		translate	0, -1
+		alpha		1.0 - parm3
+	}
+}
+
+material guiSolid
+{
+	{
+		blend blend
+		colored
+		map "_white"
+		clamp
+	}
+}
+
+
+textures/common/pda_gui
+{
+	qer_editorimage	textures/editor/entityGui.tga
+	discrete
+	guiSurf	guis/lvlmaps/genericmap.gui
+	
+}
+
+textures/common/entityGui
+{
+	qer_editorimage	textures/editor/entityGui.tga
+	discrete
+	playerclip
+	guiSurf	entity
+}
+
+textures/common/entityGui2
+{
+	qer_editorimage	textures/editor/entityGui2.tga
+	discrete
+	playerclip
+	guiSurf	entity2
+}
+
+
+textures/common/entityGui3
+{
+	qer_editorimage	textures/editor/entityGui3.tga
+	discrete
+	guiSurf	entity3
+	playerclip
+}
+
+textures/editor/visportal
+{
+	qer_editorimage	textures/editor/visportal.tga
+	areaportal
+	noshadows
+}
+
+textures/editor/aassolid
+{
+	qer_editorimage	textures/editor/aassolid.tga
+	qer_nocarve	
+	nonsolid
+	noshadows
+	aassolid
+}
+
+textures/editor/aasobstacle
+{
+	qer_editorimage	textures/editor/aasobstacle.tga
+	qer_nocarve		
+	nonsolid
+	noshadows
+	aasobstacle
+}
+
+textures/common/caulk
+{
+	qer_editorimage textures/common/caulk.tga
+	noshadows
+	forceOpaque		
+}
+
+textures/common/nodraw
+{
+	qer_editorimage textures/common/nodraw.tga
+	nonsolid
+	noshadows
+}
+
+
+textures/common/nodrawsolid
+{
+	qer_editorimage textures/common/nodrawsolid.tga
+	noshadows
+}
+

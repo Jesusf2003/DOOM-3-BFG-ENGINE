@@ -1,0 +1,63 @@
+
+entityDef player_doommarine
+{
+	"spawnclass"   					"idPlayer"
+	"scriptobject" 					"player"
+	"model"							"model_sp_marine"
+  
+	"bone_focus"					"bone1"
+	"bone_leftEye"					"bone1"
+	"bone_rightEye"					"bone1"
+	"bone_hips"						"bone1"
+	"bone_chest"					"bone1"		
+	"bone_head"						"bone1"	
+	
+	"def_weapon0"					"weapon_unarmed" 
+	"weapon0_allowempty"			"1"
+
+	"weapon"						"weapon_unarmed"
+	"current_weapon"				"0"
+    
+    "snd_heartbeat"                 ""
+}
+
+entityDef player_doommarine_mp
+{
+	"inherit" 						"player_doommarine"
+}
+
+model model_sp_marine
+{
+	mesh							models/player/player.md5mesh
+}
+
+entityDef info_player_start
+{
+	"editor_color"			"1 0 0"
+	"editor_mins"			"-16 -16 0"
+	"editor_maxs"			"16 16 64"
+	"editor_showangle"		"1"
+
+	"spawnclass"			"idPlayerStart"
+}
+
+entityDef ammo_types
+{
+	"ammo_none"				"0"
+}
+
+entityDef weapon_unarmed
+{
+	"inv_name"					"Unarmed"
+	"inv_weapon"				"weapon_unarmed"
+
+	"weapon_scriptobject"		"weapon_unarmed"
+	"ammoType"					""
+	"ammoRequired"				"0"
+	"clipSize"					"0"
+}
+
+entityDef weapon_flashlight_new
+{
+	"inherit" 					"weapon_unarmed"
+}

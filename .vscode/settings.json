@@ -1,11 +1,9 @@
 {
   "cmake.configureOnOpen": false,
   "cmake.useCMakePresets": "always",
-  "cmake.defaultConfigurePreset": "x64-debug",
-  "cmake.defaultBuildPreset": "x64-debug",
-  "cmake.defaultTestPreset": "test-x64-debug",
+  "cmake.defaultConfigurePreset": "x64-Debug",
+  "cmake.defaultBuildPreset": "x64-Debug",
   "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-  "C_Cpp.default.compilerPath": "C:/msys64/mingw64/bin/g++.exe",
   "files.associations": {
     "*.h": "cpp"
   },

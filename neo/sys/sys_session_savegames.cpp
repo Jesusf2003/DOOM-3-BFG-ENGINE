@@ -27,6 +27,8 @@ If you have questions concerning this license or the applicable additional terms
 */
 #pragma hdrstop
 #include "../idlib/precompiled.h"
+#include <memory>
+
 #include "sys_savegame.h"
 #include "sys_session_local.h"
 #include "sys_session_savegames.h"
@@ -352,7 +354,7 @@ saveGameHandle_t idSessionLocal::LoadGameSync( const char * name, saveFileEntryL
 
 		// Read the details file when loading games
 		saveFileEntryList_t	filesWithDetails( files );
-		std::auto_ptr< idFile_SaveGame > gameDetailsFile( new (TAG_SAVEGAMES) idFile_SaveGame( SAVEGAME_DETAILS_FILENAME, SAVEGAMEFILE_TEXT ) );
+		std::unique_ptr< idFile_SaveGame > gameDetailsFile( new (TAG_SAVEGAMES) idFile_SaveGame( SAVEGAME_DETAILS_FILENAME, SAVEGAMEFILE_TEXT ) );
 		filesWithDetails.Append( gameDetailsFile.get() );
 
 		// Check the cached save details from the enumeration and make sure we don't load a save from a newer version of the game!
