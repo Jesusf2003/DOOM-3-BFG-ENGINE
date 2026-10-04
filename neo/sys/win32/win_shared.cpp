@@ -41,18 +41,15 @@ If you have questions concerning this license or the applicable additional terms
 #undef StrCmpN
 #undef StrCmpNI
 #undef StrCmpI
-#if defined( _MSC_VER )
 #include <atlbase.h>
+
 #include <comdef.h>
 #include <comutil.h>
 #include <Wbemidl.h>
-#endif
 
-// wbemuuid is linked from CMakeLists.txt
+#pragma comment (lib, "wbemuuid.lib")
 
-#if defined( _MSC_VER )
 #pragma warning(disable:4740)	// warning C4740: flow in or out of inline asm code suppresses global optimization
-#endif
 
 /*
 ================
@@ -140,7 +137,6 @@ returns in megabytes
 ================
 */
 int Sys_GetVideoRam() {
-#if defined( _MSC_VER )
 	unsigned int retSize = 64;
 
 	CComPtr<IWbemLocator> spLoc = NULL;
@@ -187,9 +183,6 @@ int Sys_GetVideoRam() {
 		}
 	}
 	return retSize;
-#else
-	return 64;
-#endif
 }
 
 /*
@@ -305,13 +298,13 @@ const int UNDECORATE_FLAGS =	UNDNAME_NO_MS_KEYWORDS |
 #if defined(_DEBUG) && 1
 
 typedef struct symbol_s {
-	address_t			address;
+	int					address;
 	char *				name;
 	struct symbol_s *	next;
 } symbol_t;
 
 typedef struct module_s {
-	address_t			address;
+	int					address;
 	char *				name;
 	symbol_t *			symbols;
 	struct module_s *	next;
@@ -349,8 +342,8 @@ void SkipWhiteSpace( const char **ptr ) {
 ParseHexNumber
 ==================
 */
-address_t ParseHexNumber( const char **ptr ) {
-	address_t n = 0;
+int ParseHexNumber( const char **ptr ) {
+	int n = 0;
 	while( (**ptr) >= '0' && (**ptr) <= '9' || (**ptr) >= 'a' && (**ptr) <= 'f' ) {
 		n <<= 4;
 		if ( **ptr >= '0' && **ptr <= '9' ) {
@@ -368,11 +361,11 @@ address_t ParseHexNumber( const char **ptr ) {
 Sym_Init
 ==================
 */
-void Sym_Init( address_t addr ) {
+void Sym_Init( long addr ) {
 	TCHAR moduleName[MAX_STRING_CHARS];
 	MEMORY_BASIC_INFORMATION mbi;
 
-	VirtualQuery( reinterpret_cast<void *>( addr ), &mbi, sizeof(mbi) );
+	VirtualQuery( (void*)addr, &mbi, sizeof(mbi) );
 
 	GetModuleFileName( (HMODULE)mbi.AllocationBase, moduleName, sizeof( moduleName ) );
 
@@ -389,7 +382,7 @@ void Sym_Init( address_t addr ) {
 	module_t *module = (module_t *) malloc( sizeof( module_t ) );
 	module->name = (char *) malloc( strlen( moduleName ) + 1 );
 	strcpy( module->name, moduleName );
-	module->address = reinterpret_cast<address_t>( mbi.AllocationBase );
+	module->address = (int)mbi.AllocationBase;
 	module->symbols = NULL;
 	module->next = modules;
 	modules = module;
@@ -421,7 +414,7 @@ void Sym_Init( address_t addr ) {
 		SkipRestOfLine( &ptr );
 	}
 
-	address_t symbolAddress;
+	int symbolAddress;
 	int symbolLength;
 	char symbolName[MAX_STRING_CHARS];
 	symbol_t *symbol;
@@ -496,15 +489,15 @@ void Sym_Shutdown() {
 Sym_GetFuncInfo
 ==================
 */
-void Sym_GetFuncInfo( address_t addr, idStr &module, idStr &funcName ) {
+void Sym_GetFuncInfo( long addr, idStr &module, idStr &funcName ) {
 	MEMORY_BASIC_INFORMATION mbi;
 	module_t *m;
 	symbol_t *s;
 
-	VirtualQuery( reinterpret_cast<void *>( addr ), &mbi, sizeof(mbi) );
+	VirtualQuery( (void*)addr, &mbi, sizeof(mbi) );
 
 	for ( m = modules; m != NULL; m = m->next ) {
-		if ( m->address == reinterpret_cast<address_t>( mbi.AllocationBase ) ) {
+		if ( m->address == (int) mbi.AllocationBase ) {
 			break;
 		}
 	}
@@ -533,7 +526,7 @@ void Sym_GetFuncInfo( address_t addr, idStr &module, idStr &funcName ) {
 		}
 	}
 
-	sprintf( funcName, "%p", reinterpret_cast<void *>( addr ) );
+	sprintf( funcName, "0x%08x", addr );
 	module = "";
 }
 
@@ -548,7 +541,7 @@ idStr lastModule;
 Sym_Init
 ==================
 */
-void Sym_Init( address_t addr ) {
+void Sym_Init( long addr ) {
 	TCHAR moduleName[MAX_STRING_CHARS];
 	TCHAR modShortNameBuf[MAX_STRING_CHARS];
 	MEMORY_BASIC_INFORMATION mbi;
@@ -557,7 +550,7 @@ void Sym_Init( address_t addr ) {
 		Sym_Shutdown();
 	}
 
-	VirtualQuery( reinterpret_cast<void *>( addr ), &mbi, sizeof(mbi) );
+	VirtualQuery( (void*)addr, &mbi, sizeof(mbi) );
 
 	GetModuleFileName( (HMODULE)mbi.AllocationBase, moduleName, sizeof( moduleName ) );
 	_splitpath( moduleName, NULL, NULL, modShortNameBuf, NULL );
@@ -593,10 +586,10 @@ void Sym_Shutdown() {
 Sym_GetFuncInfo
 ==================
 */
-void Sym_GetFuncInfo( address_t addr, idStr &module, idStr &funcName ) {
+void Sym_GetFuncInfo( long addr, idStr &module, idStr &funcName ) {
 	MEMORY_BASIC_INFORMATION mbi;
 
-	VirtualQuery( reinterpret_cast<void *>( addr ), &mbi, sizeof(mbi) );
+	VirtualQuery( (void*)addr, &mbi, sizeof(mbi) );
 
 	if ( (DWORD) mbi.AllocationBase != lastAllocationBase ) {
 		Sym_Init( addr );
@@ -634,7 +627,7 @@ void Sym_GetFuncInfo( address_t addr, idStr &module, idStr &funcName ) {
 		LocalFree( lpMsgBuf );
 
 		// Couldn't retrieve symbol (no debug info?, can't load dbghelp.dll?)
-		sprintf( funcName, "%p", reinterpret_cast<void *>( addr ) );
+		sprintf( funcName, "0x%08x", addr );
 		module = "";
     }
 }
@@ -646,7 +639,7 @@ void Sym_GetFuncInfo( address_t addr, idStr &module, idStr &funcName ) {
 Sym_Init
 ==================
 */
-void Sym_Init( address_t addr ) {
+void Sym_Init( long addr ) {
 }
 
 /*
@@ -662,9 +655,9 @@ void Sym_Shutdown() {
 Sym_GetFuncInfo
 ==================
 */
-void Sym_GetFuncInfo( address_t addr, idStr &module, idStr &funcName ) {
+void Sym_GetFuncInfo( long addr, idStr &module, idStr &funcName ) {
 	module = "";
-	sprintf( funcName, "%p", reinterpret_cast<void *>( addr ) );
+	sprintf( funcName, "0x%08x", addr );
 }
 
 #endif
@@ -674,7 +667,6 @@ void Sym_GetFuncInfo( address_t addr, idStr &module, idStr &funcName ) {
 GetFuncAddr
 ==================
 */
-#if defined( _MSC_VER )
 address_t GetFuncAddr( address_t midPtPtr ) {
 	long temp;
 	do {
@@ -746,20 +738,6 @@ void Sys_GetCallStack( address_t *callStack, const int callStackSize ) {
 		callStack[i++] = 0;
 	}
 }
-#else
-void Sys_GetCallStack( address_t *callStack, const int callStackSize ) {
-	if ( callStackSize <= 0 ) {
-		return;
-	}
-
-	PVOID *frames = (PVOID *)__builtin_alloca( sizeof( PVOID ) * callStackSize );
-	const USHORT frameLimit = callStackSize > 0xffff ? 0xffff : (USHORT)callStackSize;
-	const USHORT frameCount = CaptureStackBackTrace( 0, frameLimit, frames, NULL );
-	for ( int i = 0; i < callStackSize; ++i ) {
-		callStack[i] = i < frameCount ? reinterpret_cast<address_t>( frames[i] ) : 0;
-	}
-}
-#endif
 
 /*
 ==================

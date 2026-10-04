@@ -62,7 +62,6 @@ idSoundHardware_XAudio2::idSoundHardware_XAudio2() {
 
 void listDevices_f( const idCmdArgs & args ) {
 
-#if defined(_MSC_VER)
 	IXAudio2 * pXAudio2 = soundSystemLocal.hardware.GetIXAudio2();
 
 	if ( pXAudio2 == NULL ) {
@@ -158,10 +157,6 @@ void listDevices_f( const idCmdArgs & args ) {
 			idLib::Printf( ", and %s\n", roles[roles.Num() - 1] );
 		}
 	}
-#else
-	(void)args;
-	idLib::Printf( "Using the system default XAudio2 device\n" );
-#endif
 }
 
 /*
@@ -193,7 +188,7 @@ void idSoundHardware_XAudio2::Init() {
 			return;
 		}
 	}
-#if defined(_DEBUG) && defined(_MSC_VER)
+#ifdef _DEBUG
 	XAUDIO2_DEBUG_CONFIGURATION debugConfiguration = { 0 };
 	debugConfiguration.TraceMask = XAUDIO2_LOG_WARNINGS;
 	debugConfiguration.BreakMask = XAUDIO2_LOG_ERRORS;
@@ -204,7 +199,6 @@ void idSoundHardware_XAudio2::Init() {
 	pXAudio2->RegisterForCallbacks( &soundEngineCallback );
 	soundEngineCallback.hardware = this;
 
-#if defined(_MSC_VER)
 	UINT32 deviceCount = 0;
 	if ( pXAudio2->GetDeviceCount( &deviceCount ) != S_OK || deviceCount == 0 ) {
 		idLib::Warning( "No audio devices found" );
@@ -259,36 +253,10 @@ void idSoundHardware_XAudio2::Init() {
 		pXAudio2 = NULL;
 		return;
 	}
+	pMasterVoice->SetVolume( DBtoLinear( s_volume_dB.GetFloat() ) );
+
 	outputChannels = deviceDetails.OutputFormat.Format.nChannels;
 	channelMask = deviceDetails.OutputFormat.dwChannelMask;
-#else
-	const DWORD outputSampleRate = 44100;
-	idLib::Printf( "Using the system default audio device\n" );
-	if ( FAILED( pXAudio2->CreateMasteringVoice(
-			&pMasterVoice,
-			XAUDIO2_DEFAULT_CHANNELS,
-			outputSampleRate,
-			0,
-			NULL,
-			NULL,
-			AudioCategory_GameEffects ) ) ) {
-		idLib::Warning( "Failed to create master voice" );
-		pXAudio2->Release();
-		pXAudio2 = NULL;
-		return;
-	}
-
-	XAUDIO2_VOICE_DETAILS deviceDetails;
-	pMasterVoice->GetVoiceDetails( &deviceDetails );
-	outputChannels = deviceDetails.InputChannels;
-	DWORD outputChannelMask = 0;
-	if ( FAILED( pMasterVoice->GetChannelMask( &outputChannelMask ) ) ) {
-		channelMask = outputChannels == 1 ? SPEAKER_FRONT_CENTER : SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT;
-	} else {
-		channelMask = outputChannelMask;
-	}
-#endif
-	pMasterVoice->SetVolume( DBtoLinear( s_volume_dB.GetFloat() ) );
 
 	idSoundVoice::InitSurround( outputChannels, channelMask );
 
@@ -300,7 +268,6 @@ void idSoundHardware_XAudio2::Init() {
 	// ---------------------
 	// Create VU Meter Effect
 	// ---------------------
-#if defined(_MSC_VER)
 	IUnknown * vuMeter = NULL;
 	XAudio2CreateVolumeMeter( &vuMeter, 0 );
 
@@ -316,7 +283,6 @@ void idSoundHardware_XAudio2::Init() {
 	pMasterVoice->SetEffectChain( &chain );
 
 	vuMeter->Release();
-#endif
 
 	// ---------------------
 	// Create VU Meter Graph
@@ -513,20 +479,15 @@ void idSoundHardware_XAudio2::Update() {
 	vuMeterPeak->Enable( s_showLevelMeter.GetBool() );
 
 	if ( !s_showLevelMeter.GetBool() ) {
-#if defined(_MSC_VER)
 		pMasterVoice->DisableEffect( 0 );
-#endif
 		return;
 	} else {
-#if defined(_MSC_VER)
 		pMasterVoice->EnableEffect( 0 );
-#endif
 	}
 
 	float peakLevels[ 8 ];
 	float rmsLevels[ 8 ];
 
-#if defined(_MSC_VER)
 	XAUDIO2FX_VOLUMEMETER_LEVELS levels;
 	levels.ChannelCount = outputChannels;
 	levels.pPeakLevels = peakLevels;
@@ -537,11 +498,6 @@ void idSoundHardware_XAudio2::Update() {
 	}
 
 	pMasterVoice->GetEffectParameters( 0, &levels, sizeof( levels ) );
-#else
-	const uint32 channelCount = outputChannels < 8 ? outputChannels : 8;
-	memset( peakLevels, 0, sizeof( peakLevels ) );
-	memset( rmsLevels, 0, sizeof( rmsLevels ) );
-#endif
 
 	int currentTime = Sys_Milliseconds();
 	for ( int i = 0; i < outputChannels; i++ ) {
@@ -557,16 +513,10 @@ void idSoundHardware_XAudio2::Update() {
 
 	sscanf( s_meterPosition.GetString(), "%f %f %f %f", &left, &top, &width, &height );
 
-	const uint32 meterChannels =
-#if defined(_MSC_VER)
-		levels.ChannelCount;
-#else
-		channelCount;
-#endif
-	vuMeterRMS->SetPosition( left, top, width * meterChannels, height );
-	vuMeterPeak->SetPosition( left, top, width * meterChannels, height );
+	vuMeterRMS->SetPosition( left, top, width * levels.ChannelCount, height );
+	vuMeterPeak->SetPosition( left, top, width * levels.ChannelCount, height );
 
-	for ( uint32 i = 0; i < meterChannels; i++ ) {
+	for ( uint32 i = 0; i < levels.ChannelCount; i++ ) {
 		vuMeterRMS->SetValue( i, rmsLevels[ i ], idVec4( 0.5f, 1.0f, 0.0f, 1.00f ) );
 		if ( peakLevels[ i ] >= vuMeterPeak->GetValue( i ) ) {
 			vuMeterPeak->SetValue( i, peakLevels[ i ], colorRed );

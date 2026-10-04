@@ -175,14 +175,14 @@ void idSoundVoice_XAudio2::Start( int offsetMS, int ssFlags ) {
 		idLib::Warning( "Starting defaulted sound sample %s", leadinSample->GetName() );
 	}
 
-#if defined(_MSC_VER)
 	bool flicker = ( ssFlags & SSF_NO_FLICKER ) == 0;
+
 	if ( flicker != hasVUMeter ) {
 		hasVUMeter = flicker;
 
 		if ( flicker ) {
 			IUnknown * vuMeter = NULL;
-			if ( CreateAudioVolumeMeter( &vuMeter ) == S_OK ) {
+			if ( XAudio2CreateVolumeMeter( &vuMeter, 0 ) == S_OK ) {
 
 				XAUDIO2_EFFECT_DESCRIPTOR descriptor;
 				descriptor.InitialState = true;
@@ -201,10 +201,6 @@ void idSoundVoice_XAudio2::Start( int offsetMS, int ssFlags ) {
 			pSourceVoice->SetEffectChain( NULL );
 		}
 	}
-#else
-	(void)ssFlags;
-	hasVUMeter = false;
-#endif
 
 	assert( offsetMS >= 0 );
 	int offsetSamples = MsecToSamples( offsetMS, leadinSample->SampleRate() );
@@ -401,7 +397,6 @@ idSoundVoice_XAudio2::GetAmplitude
 ========================
 */
 float idSoundVoice_XAudio2::GetAmplitude() {
-#if defined(_MSC_VER)
 	if ( !hasVUMeter ) {
 		return 1.0f;
 	}
@@ -432,9 +427,6 @@ float idSoundVoice_XAudio2::GetAmplitude() {
 	}
 
 	return rms / (float)levels.ChannelCount;
-#else
-	return 1.0f;
-#endif
 }
 
 /*
@@ -468,13 +460,11 @@ void idSoundVoice_XAudio2::SetSampleRate( uint32 newSampleRate, uint32 operation
 	freqRatio = idMath::ClampFloat( XAUDIO2_MIN_FREQ_RATIO, XAUDIO2_MAX_FREQ_RATIO, freqRatio );
 
 	// if the value specified for maxFreqRatio is too high for the specified format, the call to CreateSourceVoice will fail
-#if defined(_MSC_VER)
 	if ( numChannels == 1 ) {
 		assert( freqRatio * (float)SYSTEM_SAMPLE_RATE <= XAUDIO2_MAX_RATIO_TIMES_RATE_XMA_MONO );
 	} else {
 		assert( freqRatio * (float)SYSTEM_SAMPLE_RATE <= XAUDIO2_MAX_RATIO_TIMES_RATE_XMA_MULTICHANNEL );
 	}
-#endif
 	pSourceVoice->SetFrequencyRatio( freqRatio, operationSet );
 }
 

@@ -295,7 +295,7 @@ void idItem::Spawn() {
 		if ( !ent ) {
 			gameLocal.Error( "Item couldn't find owner '%s'", giveTo.c_str() );
 		}
-		PostEventMS( &EV_Touch, 0, ent, idEventArg( 0 ) );
+		PostEventMS( &EV_Touch, 0, ent, NULL );
 	}
 
 	// idItemTeam does not rotate and bob

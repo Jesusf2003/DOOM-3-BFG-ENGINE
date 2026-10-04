@@ -1607,11 +1607,12 @@ int idFileSystemLocal::ReadFile( const char *relativePath, void **buffer, ID_TIM
 
 	if ( buffer == NULL && timestamp != NULL && resourceFiles.Num() > 0 ) {
 		static idResourceCacheEntry rc;
+		int size = 0;
 		if ( GetResourceCacheEntry( relativePath, rc ) ) {
 			*timestamp = 0;
-			return rc.length;
-		}
-		// not packed: fall through so loose files (e.g. generated GLSL) are still found
+			size = rc.length;
+		} 
+		return size;
 	}
 
 	buf = NULL;	// quiet compiler warning

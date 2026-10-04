@@ -26,11 +26,6 @@ If you have questions concerning this license or the applicable additional terms
 ===========================================================================
 */
 
-#include <windows.h>
-extern "C" {
-#include <x3daudio.h>
-}
-
 #include "Precompiled.h"
 #include "globaldata.h"
 
@@ -63,6 +58,7 @@ extern "C" {
 #include "sound/snd_local.h"
 
 #include <xaudio2.h>
+#include <x3daudio.h>
 
 #pragma warning ( disable : 4244 )
 
@@ -1085,3 +1081,4 @@ int I_RegisterSong(void* data, int length)
 	// does nothing
 	return 0;
 }
+

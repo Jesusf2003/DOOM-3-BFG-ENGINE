@@ -43,7 +43,9 @@ static bool usingSocks = false;
 
 //lint -e569	ioctl macros trigger this
 
-// iphlpapi and ws2_32/wsock32 are linked from CMakeLists.txt
+// force these libs to be included, so users of idLib don't need to add them to every project
+#pragma comment(lib, "iphlpapi.lib" )
+#pragma comment(lib, "wsock32.lib" )
 
 
 /*

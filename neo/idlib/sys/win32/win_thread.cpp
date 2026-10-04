@@ -47,7 +47,6 @@ Sys_SetThreadName
 ========================
 */
 void Sys_SetThreadName( DWORD threadID, const char * name ) {
-#if defined(_MSC_VER)
 	THREADNAME_INFO info;
 	info.dwType = 0x1000;
 	info.szName = name;
@@ -61,10 +60,6 @@ void Sys_SetThreadName( DWORD threadID, const char * name ) {
 	__except( GetExceptionCode() == MS_VC_EXCEPTION ? EXCEPTION_EXECUTE_HANDLER : EXCEPTION_CONTINUE_SEARCH ) {
 		info.dwFlags = 0;
 	}
-#else
-	(void)threadID;
-	(void)name;
-#endif
 }
 
 /*
@@ -87,7 +82,7 @@ uintptr_t Sys_CreateThread( xthread_t function, void *parms, xthreadPriority pri
 	// Without this flag the 'dwStackSize' parameter to CreateThread specifies the "Stack Commit Size"
 	// and the "Stack Reserve Size" is set to the value specified at link-time.
 	// With this flag the 'dwStackSize' parameter to CreateThread specifies the "Stack Reserve Size"
-	// and the ï¿½Stack Commit Sizeï¿½ is set to the value specified at link-time.
+	// and the “Stack Commit Size” is set to the value specified at link-time.
 	// For various reasons (some of which historic) we reserve a large amount of stack space in the
 	// project settings. By setting this flag and by specifying 64 kB for the "Stack Commit Size" in
 	// the project settings we can create new threads with a much smaller reserved (and committed)

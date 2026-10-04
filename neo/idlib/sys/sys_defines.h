@@ -105,11 +105,7 @@ If you have questions concerning this license or the applicable additional terms
 #define NEWLINE							"\r\n"
 
 #define ID_INLINE						inline
-#if defined(_MSC_VER)
 #define ID_FORCE_INLINE					__forceinline
-#else
-#define ID_FORCE_INLINE					inline __attribute__((always_inline))
-#endif
 
 // lint complains that extern used with definition is a hazard, but it
 // has the benefit (?) of making it illegal to take the address of the function
@@ -117,13 +113,8 @@ If you have questions concerning this license or the applicable additional terms
 #define ID_INLINE_EXTERN				inline
 #define ID_FORCE_INLINE_EXTERN			__forceinline
 #else
-#if defined(_MSC_VER)
 #define ID_INLINE_EXTERN				extern inline
 #define ID_FORCE_INLINE_EXTERN			extern __forceinline
-#else
-#define ID_INLINE_EXTERN				inline
-#define ID_FORCE_INLINE_EXTERN			inline __attribute__((always_inline))
-#endif
 #endif
 
 // we should never rely on this define in our code. this is here so dodgy external libraries don't get confused
@@ -149,12 +140,6 @@ Defines and macros usable in all code
 #define likely( x )	( x )
 #define unlikely( x )	( x )
 
-#if defined(_MSC_VER)
-#define ID_ASSUME(condition) __assume(condition)
-#else
-#define ID_ASSUME(condition) do { if (!(condition)) __builtin_unreachable(); } while (0)
-#endif
-
 // A macro to disallow the copy constructor and operator= functions
 // NOTE: The macro contains "private:" so all members defined after it will be private until
 // public: or protected: is specified.
@@ -178,7 +163,7 @@ bulk of the codebase, so it is the best place for analyze pragmas.
 ================================================================================================
 */
 
-#if defined(ID_WIN32) && defined(_MSC_VER)
+#if defined( ID_WIN32 )
 
 // disable some /analyze warnings here
 #pragma warning( disable: 6255 )	// warning C6255: _alloca indicates failure by raising a stack overflow exception. Consider using _malloca instead. (Note: _malloca requires _freea.)
@@ -206,11 +191,6 @@ bulk of the codebase, so it is the best place for analyze pragmas.
 // never return, so any conditions that leeds to them being called are
 // guaranteed to be false in the following code
 #define NO_RETURN __declspec(noreturn)
-
-#else
-
-#define VERIFY_FORMAT_STRING
-#define NO_RETURN __attribute__((noreturn))
 
 #endif
 

@@ -30,7 +30,6 @@ If you have questions concerning this license or the applicable additional terms
 
 class idSoundSample_XAudio2;
 class idSoundVoice_XAudio2;
-class idSoundHardware_XAudio2;
 
 /*
 ================================================

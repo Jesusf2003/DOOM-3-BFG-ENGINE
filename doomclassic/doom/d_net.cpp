@@ -74,7 +74,7 @@ extern bool globalNetworking;
 //
 int NetbufferSize (void)
 {
-	int size = offsetof( doomdata_t, cmds ) + sizeof( ::g->netbuffer->cmds[0] ) * ::g->netbuffer->numtics;
+	int size = (int)&(((doomdata_t *)0)->cmds[::g->netbuffer->numtics]);
 
 	return size;
 }
@@ -90,7 +90,7 @@ unsigned NetbufferChecksum (void)
 	c = 0x1234567;
 
 	if ( globalNetworking ) {
-		l = (NetbufferSize () - offsetof( doomdata_t, retransmitfrom ))/4;
+		l = (NetbufferSize () - (int)&(((doomdata_t *)0)->retransmitfrom))/4;
 		for (i=0 ; i<l ; i++)
 			c += ((unsigned *)&::g->netbuffer->retransmitfrom)[i] * (i+1);
 	}
@@ -828,3 +828,4 @@ bool TryRunTics ( idUserCmdMgr * userCmdMgr )
 
 	return true;
 }
+

@@ -501,10 +501,7 @@ typedef struct st_lwPolVert {
 } lwPolVert;
 
 typedef struct st_lwPolygon {
-   union {
-      lwSurface  *surf;
-      int         surfIndex;
-   };
+   lwSurface     *surf;
    int            part;                /* part index */
    int            smoothgrp;           /* smoothing group */
    int            flags;

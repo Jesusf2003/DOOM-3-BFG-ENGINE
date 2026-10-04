@@ -575,7 +575,7 @@ void R_InitColormaps (void)
     lump = W_GetNumForName("COLORMAP"); 
     length = W_LumpLength (lump) + 255; 
     ::g->colormaps = (lighttable_t*)DoomLib::Z_Malloc (length, PU_STATIC, 0); 
-    ::g->colormaps = reinterpret_cast<byte *>( ( ( reinterpret_cast<uintptr_t>( ::g->colormaps ) + 255u ) & ~static_cast<uintptr_t>( 0xff ) ) );
+    ::g->colormaps = (byte *)( ((int)::g->colormaps + 255)&~0xff); 
     W_ReadLump (lump,::g->colormaps); 
 }
 
@@ -769,6 +769,7 @@ void R_PrecacheLevel (void)
 	}
     }
 }
+
 
 
 

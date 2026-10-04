@@ -116,7 +116,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if ( ( HWND ) lParam == s_wcd.hwndBuffer ) {
 				SetBkColor( ( HDC ) wParam, RGB( 0x00, 0x00, 0x80 ) );
 				SetTextColor( ( HDC ) wParam, RGB( 0xff, 0xff, 0x00 ) );
-				return reinterpret_cast<LRESULT>( s_wcd.hbrEditBackground );
+				return ( long ) s_wcd.hbrEditBackground;
 			} else if ( ( HWND ) lParam == s_wcd.hwndErrorBox ) {
 				if ( s_timePolarity & 1 ) {
 					SetBkColor( ( HDC ) wParam, RGB( 0x80, 0x80, 0x80 ) );
@@ -125,7 +125,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 					SetBkColor( ( HDC ) wParam, RGB( 0x80, 0x80, 0x80 ) );
 					SetTextColor( ( HDC ) wParam, RGB( 0x00, 0x0, 0x00 ) );
 				}
-				return reinterpret_cast<LRESULT>( s_wcd.hbrErrorBackground );
+				return ( long ) s_wcd.hbrErrorBackground;
 			}
 			break;
 		case WM_SYSCOMMAND:
@@ -188,7 +188,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
     return DefWindowProc( hWnd, uMsg, wParam, lParam );
 }
 
-LRESULT CALLBACK InputLineWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LONG WINAPI InputLineWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	int key, cursor;
 	switch ( uMsg ) {
 	case WM_KILLFOCUS:
@@ -389,8 +389,7 @@ void Sys_CreateConsole() {
 												win32.hInstance, NULL );
 	SendMessage( s_wcd.hwndBuffer, WM_SETFONT, ( WPARAM ) s_wcd.hfBufferFont, 0 );
 
-	s_wcd.SysInputLineWndProc = reinterpret_cast<WNDPROC>(
-		SetWindowLongPtr( s_wcd.hwndInputLine, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>( InputLineWndProc ) ) );
+	s_wcd.SysInputLineWndProc = ( WNDPROC ) SetWindowLong( s_wcd.hwndInputLine, GWL_WNDPROC, ( long ) InputLineWndProc );
 	SendMessage( s_wcd.hwndInputLine, WM_SETFONT, ( WPARAM ) s_wcd.hfBufferFont, 0 );
 
 // don't show it now that we have a splash screen up

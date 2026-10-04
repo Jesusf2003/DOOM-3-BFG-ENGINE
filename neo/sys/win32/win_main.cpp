@@ -846,9 +846,9 @@ DLL Loading
 Sys_DLL_Load
 =====================
 */
-uintptr_t Sys_DLL_Load( const char *dllName ) {
+int Sys_DLL_Load( const char *dllName ) {
 	HINSTANCE libHandle = LoadLibrary( dllName );
-	return reinterpret_cast<uintptr_t>( libHandle );
+	return (int)libHandle;
 }
 
 /*
@@ -856,8 +856,8 @@ uintptr_t Sys_DLL_Load( const char *dllName ) {
 Sys_DLL_GetProcAddress
 =====================
 */
-void *Sys_DLL_GetProcAddress( uintptr_t dllHandle, const char *procName ) {
-	return reinterpret_cast<void *>( GetProcAddress( reinterpret_cast<HINSTANCE>( dllHandle ), procName ) );
+void *Sys_DLL_GetProcAddress( int dllHandle, const char *procName ) {
+	return GetProcAddress( (HINSTANCE)dllHandle, procName ); 
 }
 
 /*
@@ -865,11 +865,11 @@ void *Sys_DLL_GetProcAddress( uintptr_t dllHandle, const char *procName ) {
 Sys_DLL_Unload
 =====================
 */
-void Sys_DLL_Unload( uintptr_t dllHandle ) {
+void Sys_DLL_Unload( int dllHandle ) {
 	if ( !dllHandle ) {
 		return;
 	}
-	if ( FreeLibrary( reinterpret_cast<HINSTANCE>( dllHandle ) ) == 0 ) {
+	if ( FreeLibrary( (HINSTANCE)dllHandle ) == 0 ) {
 		int lastError = GetLastError();
 		LPVOID lpMsgBuf;
 		FormatMessage(
@@ -1264,7 +1264,6 @@ void Win_Frame() {
 	}
 }
 
-#if defined( _MSC_VER )
 extern "C" { void _chkstk( int size ); };
 void clrstk();
 
@@ -1292,7 +1291,6 @@ void HackChkStk() {
 
 	TestChkStk();
 }
-#endif
 
 /*
 ====================
@@ -1394,33 +1392,6 @@ EXCEPTION_DISPOSITION __cdecl _except_handler( struct _EXCEPTION_RECORD *Excepti
 										ContextRecord->FloatSave.DataOffset,
 										ContextRecord->FloatSave.DataSelector );
 
-#if defined(_WIN64)
-#define EXCEPTION_REGISTER_FORMAT "%016llx"
-#define EXCEPTION_REGISTER_ARGS \
-	static_cast<unsigned long long>( ContextRecord->Rax ), static_cast<unsigned long long>( ContextRecord->Rbx ), \
-	static_cast<unsigned long long>( ContextRecord->Rcx ), static_cast<unsigned long long>( ContextRecord->Rdx ), \
-	static_cast<unsigned long long>( ContextRecord->Rsi ), static_cast<unsigned long long>( ContextRecord->Rdi ), \
-	static_cast<unsigned long long>( ContextRecord->Rip ), static_cast<unsigned long long>( ContextRecord->Rsp ), \
-	static_cast<unsigned long long>( ContextRecord->Rbp ), static_cast<unsigned long long>( ContextRecord->EFlags )
-#define EXCEPTION_REGISTER_LABELS \
-		"RAX = 0x" EXCEPTION_REGISTER_FORMAT " RBX = 0x" EXCEPTION_REGISTER_FORMAT "\n" \
-		"RCX = 0x" EXCEPTION_REGISTER_FORMAT " RDX = 0x" EXCEPTION_REGISTER_FORMAT "\n" \
-		"RSI = 0x" EXCEPTION_REGISTER_FORMAT " RDI = 0x" EXCEPTION_REGISTER_FORMAT "\n" \
-		"RIP = 0x" EXCEPTION_REGISTER_FORMAT " RSP = 0x" EXCEPTION_REGISTER_FORMAT "\n" \
-		"RBP = 0x" EXCEPTION_REGISTER_FORMAT " EFL = 0x" EXCEPTION_REGISTER_FORMAT "\n"
-#else
-#define EXCEPTION_REGISTER_FORMAT "%08x"
-#define EXCEPTION_REGISTER_ARGS \
-	ContextRecord->Eax, ContextRecord->Ebx, ContextRecord->Ecx, ContextRecord->Edx, \
-	ContextRecord->Esi, ContextRecord->Edi, ContextRecord->Eip, ContextRecord->Esp, \
-	ContextRecord->Ebp, ContextRecord->EFlags
-#define EXCEPTION_REGISTER_LABELS \
-		"EAX = 0x" EXCEPTION_REGISTER_FORMAT " EBX = 0x" EXCEPTION_REGISTER_FORMAT "\n" \
-		"ECX = 0x" EXCEPTION_REGISTER_FORMAT " EDX = 0x" EXCEPTION_REGISTER_FORMAT "\n" \
-		"ESI = 0x" EXCEPTION_REGISTER_FORMAT " EDI = 0x" EXCEPTION_REGISTER_FORMAT "\n" \
-		"EIP = 0x" EXCEPTION_REGISTER_FORMAT " ESP = 0x" EXCEPTION_REGISTER_FORMAT "\n" \
-		"EBP = 0x" EXCEPTION_REGISTER_FORMAT " EFL = 0x" EXCEPTION_REGISTER_FORMAT "\n"
-#endif
 
 	sprintf( msg, 
 		"Please describe what you were doing when DOOM 3 crashed!\n"
@@ -1430,11 +1401,15 @@ EXCEPTION_DISPOSITION __cdecl _except_handler( struct _EXCEPTION_RECORD *Excepti
 			"\n"
 			"%s\n"
 			"\n"
-			"0x%x at address %p\n"
+			"0x%x at address 0x%08p\n"
 			"\n"
 			"%s\n"
 			"\n"
-			EXCEPTION_REGISTER_LABELS
+			"EAX = 0x%08x EBX = 0x%08x\n"
+			"ECX = 0x%08x EDX = 0x%08x\n"
+			"ESI = 0x%08x EDI = 0x%08x\n"
+			"EIP = 0x%08x ESP = 0x%08x\n"
+			"EBP = 0x%08x EFL = 0x%08x\n"
 			"\n"
 			"CS = 0x%04x\n"
 			"SS = 0x%04x\n"
@@ -1448,7 +1423,11 @@ EXCEPTION_DISPOSITION __cdecl _except_handler( struct _EXCEPTION_RECORD *Excepti
 			ExceptionRecord->ExceptionCode,
 			ExceptionRecord->ExceptionAddress,
 			GetExceptionCodeInfo( ExceptionRecord->ExceptionCode ),
-			EXCEPTION_REGISTER_ARGS,
+			ContextRecord->Eax, ContextRecord->Ebx,
+			ContextRecord->Ecx, ContextRecord->Edx,
+			ContextRecord->Esi, ContextRecord->Edi,
+			ContextRecord->Eip, ContextRecord->Esp,
+			ContextRecord->Ebp, ContextRecord->EFlags,
 			ContextRecord->SegCs,
 			ContextRecord->SegSs,
 			ContextRecord->SegDs,
@@ -1457,9 +1436,6 @@ EXCEPTION_DISPOSITION __cdecl _except_handler( struct _EXCEPTION_RECORD *Excepti
 			ContextRecord->SegGs,
 			FPUFlags
 		);
-#undef EXCEPTION_REGISTER_LABELS
-#undef EXCEPTION_REGISTER_ARGS
-#undef EXCEPTION_REGISTER_FORMAT
 
 	EmailCrashReport( msg );
 	common->FatalError( msg );
@@ -1478,42 +1454,10 @@ EXCEPTION_DISPOSITION __cdecl _except_handler( struct _EXCEPTION_RECORD *Excepti
 
 /*
 ==================
-Sys_EnableDpiAwareness
-
-Window sizes and display modes are handled in physical pixels, so opt out of
-DWM bitmap scaling. Resolved at runtime to keep working on older Windows and
-with MinGW headers that lack the declarations.
-==================
-*/
-static void Sys_EnableDpiAwareness() {
-	HMODULE user32 = GetModuleHandle( "user32.dll" );
-	if ( user32 == NULL ) {
-		return;
-	}
-
-	typedef BOOL ( WINAPI * setProcessDpiAwarenessContext_t )( HANDLE );
-	setProcessDpiAwarenessContext_t setContext = (setProcessDpiAwarenessContext_t)(void *)GetProcAddress( user32, "SetProcessDpiAwarenessContext" );
-	// DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 (Windows 10 1703+)
-	if ( setContext != NULL && setContext( (HANDLE)(INT_PTR)-4 ) ) {
-		return;
-	}
-
-	typedef BOOL ( WINAPI * setProcessDPIAware_t )();
-	setProcessDPIAware_t setAware = (setProcessDPIAware_t)(void *)GetProcAddress( user32, "SetProcessDPIAware" );
-	if ( setAware != NULL ) {
-		setAware();
-	}
-}
-
-/*
-==================
 WinMain
 ==================
 */
 int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
-
-	// must happen before any window is created
-	Sys_EnableDpiAwareness();
 
 	const HCURSOR hcurSave = ::SetCursor( LoadCursor( 0, IDC_WAIT ) );
 
@@ -1612,7 +1556,6 @@ clrstk
 I tried to get the run time to call this at every function entry, but
 ====================
 */
-#if defined( _MSC_VER )
 static int	parmBytes;
 __declspec( naked ) void clrstk() {
 	// eax = bytes to add to stack
@@ -1641,7 +1584,6 @@ __declspec( naked ) void clrstk() {
         ret
 	}
 }
-#endif
 
 /*
 ==================

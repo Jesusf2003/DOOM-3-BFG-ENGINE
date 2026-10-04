@@ -253,31 +253,31 @@ int idSimpleWindow::GetWinVarOffset( idWinVar *wv, drawWin_t* owner) {
 	int ret = -1;
 
 	if ( wv == &rect ) {
-		ret = static_cast<int>( reinterpret_cast<uintptr_t>( &( ( idSimpleWindow * ) 0 )->rect ) );
+		ret = (int)&( ( idSimpleWindow * ) 0 )->rect;
 	}
 
 	if ( wv == &backColor ) {
-		ret = static_cast<int>( reinterpret_cast<uintptr_t>( &( ( idSimpleWindow * ) 0 )->backColor ) );
+		ret = (int)&( ( idSimpleWindow * ) 0 )->backColor;
 	}
 
 	if ( wv == &matColor ) {
-		ret = static_cast<int>( reinterpret_cast<uintptr_t>( &( ( idSimpleWindow * ) 0 )->matColor ) );
+		ret = (int)&( ( idSimpleWindow * ) 0 )->matColor;
 	}
 
 	if ( wv == &foreColor ) {
-		ret = static_cast<int>( reinterpret_cast<uintptr_t>( &( ( idSimpleWindow * ) 0 )->foreColor ) );
+		ret = (int)&( ( idSimpleWindow * ) 0 )->foreColor;
 	}
 
 	if ( wv == &borderColor ) {
-		ret = static_cast<int>( reinterpret_cast<uintptr_t>( &( ( idSimpleWindow * ) 0 )->borderColor ) );
+		ret = (int)&( ( idSimpleWindow * ) 0 )->borderColor;
 	}
 
 	if ( wv == &textScale ) {
-		ret = static_cast<int>( reinterpret_cast<uintptr_t>( &( ( idSimpleWindow * ) 0 )->textScale ) );
+		ret = (int)&( ( idSimpleWindow * ) 0 )->textScale;
 	}
 
 	if ( wv == &rotate ) {
-		ret = static_cast<int>( reinterpret_cast<uintptr_t>( &( ( idSimpleWindow * ) 0 )->rotate ) );
+		ret = (int)&( ( idSimpleWindow * ) 0 )->rotate;
 	}
 
 	if ( ret != -1 ) {

@@ -130,7 +130,6 @@ long baseClocks = 0;
 
 #pragma warning(disable : 4731)     // frame pointer register 'ebx' modified by inline assembly code
 
-#if defined(_MSC_VER)
 long saved_ebx = 0;
 
 #define StartRecordTime( start )			\
@@ -150,12 +149,6 @@ long saved_ebx = 0;
 	__asm mov ebx, saved_ebx				\
 	__asm xor eax, eax						\
 	__asm cpuid
-#else
-#include <x86intrin.h>
-
-#define StartRecordTime( start )	( start ) = (int)__rdtsc()
-#define StopRecordTime( end )		( end ) = (int)__rdtsc()
-#endif
 
 
 #define GetBest( start, end, best )			\

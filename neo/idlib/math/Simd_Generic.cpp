@@ -44,7 +44,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifdef _DEBUG
 #define NODEFAULT	default: assert( 0 )
 #else
-#define NODEFAULT	default: ID_ASSUME( 0 )
+#define NODEFAULT	default: __assume( 0 )
 #endif
 
 

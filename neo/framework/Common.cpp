@@ -841,7 +841,7 @@ void idCommonLocal::LoadGameDLL() {
 	GetGameAPI = (GetGameAPI_t) Sys_DLL_GetProcAddress( gameDLL, functionName );
 	if ( !GetGameAPI ) {
 		Sys_DLL_Unload( gameDLL );
-		gameDLL = 0;
+		gameDLL = NULL;
 		common->FatalError( "couldn't find game DLL API" );
 		return;
 	}
@@ -864,7 +864,7 @@ void idCommonLocal::LoadGameDLL() {
 
 	if ( gameExport.version != GAME_API_VERSION ) {
 		Sys_DLL_Unload( gameDLL );
-		gameDLL = 0;
+		gameDLL = NULL;
 		common->FatalError( "wrong game DLL API version" );
 		return;
 	}
@@ -907,7 +907,7 @@ void idCommonLocal::UnloadGameDLL() {
 
 	if ( gameDLL ) {
 		Sys_DLL_Unload( gameDLL );
-		gameDLL = 0;
+		gameDLL = NULL;
 	}
 	game = NULL;
 	gameEdit = NULL;

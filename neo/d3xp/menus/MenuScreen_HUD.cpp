@@ -1870,7 +1870,7 @@ void idMenuScreen_HUD::UpdateChattingHud( idPlayer * player ) {
 		if ( mpChatObject->GetCurrentFrame() != 1 ) {
 			mpChatObject->StopFrame( 1 );
 			gui->ForceInhibitControl( false );
-			gui->SetGlobal( "focusWindow", static_cast<idSWFScriptObject *>( nullptr ) );
+			gui->SetGlobal( "focusWindow", NULL );
 		}
 	} else {
 		if ( !mpChatObject->IsVisible() ) {

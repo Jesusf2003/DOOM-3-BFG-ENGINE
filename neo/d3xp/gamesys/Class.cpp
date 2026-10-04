@@ -787,7 +787,7 @@ idClass::ProcessEventArgs
 bool idClass::ProcessEventArgs( const idEventDef *ev, int numargs, ... ) {
 	idTypeInfo	*c;
 	int			num;
-	intptr_t	data[ D_EVENT_MAXARGS ];
+	int			data[ D_EVENT_MAXARGS ];
 	va_list		args;
 	
 	assert( ev );
@@ -895,7 +895,7 @@ bool idClass::ProcessEvent( const idEventDef *ev, idEventArg arg1, idEventArg ar
 idClass::ProcessEventArgPtr
 ================
 */
-bool idClass::ProcessEventArgPtr( const idEventDef *ev, intptr_t *data ) {
+bool idClass::ProcessEventArgPtr( const idEventDef *ev, int *data ) {
 	idTypeInfo	*c;
 	int			num;
 	eventCallback_t	callback;

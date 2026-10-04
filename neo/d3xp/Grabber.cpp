@@ -275,7 +275,7 @@ void idGrabber::StartDrag( idEntity *grabEnt, int id ) {
 			aiEnt->StartRagdoll();
 		}
 	} else if ( grabEnt->IsType( idMoveableItem::Type ) ) {
-		grabEnt->PostEventMS( &EV_Touch, 250, thePlayer, idEventArg( 0 ) );
+		grabEnt->PostEventMS( &EV_Touch, 250, thePlayer, NULL );
 	}
 
 	// Get the current physics object to manipulate
@@ -736,3 +736,4 @@ bool idGrabber::grabbableAI( const char *aiName ) {
 
 	return false;
 }
+

@@ -29,8 +29,6 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __SYS_PUBLIC__
 #define __SYS_PUBLIC__
 
-#include <stdint.h>
-
 #include "../idlib/CmdArgs.h"
 
 /*
@@ -392,7 +390,7 @@ struct sysMemoryStats_t {
 	int availExtendedVirtual;
 };
 
-typedef uintptr_t address_t;
+typedef unsigned long address_t;
 
 void			Sys_Init();
 void			Sys_Shutdown();
@@ -493,9 +491,9 @@ const char *	Sys_GetCallStackCurAddressStr( int depth );
 void			Sys_ShutdownSymbols();
 
 // DLL loading, the path should be a fully qualified OS path to the DLL file to be loaded
-uintptr_t		Sys_DLL_Load( const char *dllName );
-void *			Sys_DLL_GetProcAddress( uintptr_t dllHandle, const char *procName );
-void			Sys_DLL_Unload( uintptr_t dllHandle );
+int				Sys_DLL_Load( const char *dllName );
+void *			Sys_DLL_GetProcAddress( int dllHandle, const char *procName );
+void			Sys_DLL_Unload( int dllHandle );
 
 // event generation
 void			Sys_GenerateEvents();
@@ -707,9 +705,9 @@ public:
 	virtual const char *	GetCallStackCurStr( int depth ) = 0;
 	virtual void			ShutdownSymbols() = 0;
 
-	virtual uintptr_t		DLL_Load( const char *dllName ) = 0;
-	virtual void *			DLL_GetProcAddress( uintptr_t dllHandle, const char *procName ) = 0;
-	virtual void			DLL_Unload( uintptr_t dllHandle ) = 0;
+	virtual int				DLL_Load( const char *dllName ) = 0;
+	virtual void *			DLL_GetProcAddress( int dllHandle, const char *procName ) = 0;
+	virtual void			DLL_Unload( int dllHandle ) = 0;
 	virtual void			DLL_GetFileName( const char *baseName, char *dllName, int maxLength ) = 0;
 
 	virtual sysEvent_t		GenerateMouseButtonEvent( int button, bool down ) = 0;
